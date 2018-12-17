@@ -106,6 +106,23 @@ Resources:
             Path: /log
             Method: POST
             RestApiId: !Ref api1BBC17DA
+  functionB2A1958:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-functionB2A1958
+      Description: !Sub
+        - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
+        - ResourceName: lambdaBash
+      CodeUri: src/lambdaBash
+      Handler: index.handler
+      Runtime: nodejs8.10
+      MemorySize: 3008
+      Timeout: 30
+      Tracing: Active
+      Policies:
+        - AWSXrayWriteOnlyAccess
+    Metadata:
+      StackeryName: lambdaBash
 Parameters:
   StackTagName:
     Type: String
