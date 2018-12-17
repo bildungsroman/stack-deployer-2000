@@ -26,6 +26,13 @@ Resources:
                 type: aws_proxy
                 uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${function79FD8F5.Arn}/invocations
               responses: {}
+          /log:
+            post:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${functionA3BAFDB.Arn}/invocations
+              responses: {}
       EndpointConfiguration: REGIONAL
     Metadata:
       StackeryName: triggerDeploy
@@ -77,6 +84,28 @@ Resources:
             RestApiId: !Ref api1BBC17DA
     Metadata:
       StackeryName: testDeploy
+  functionA3BAFDB:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-functionA3BAFDB
+      Description: !Sub
+        - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
+        - ResourceName: functionA3BAFDB
+      CodeUri: src/functionA3BAFDB
+      Handler: index.handler
+      Runtime: nodejs8.10
+      MemorySize: 3008
+      Timeout: 30
+      Tracing: Active
+      Policies:
+        - AWSXrayWriteOnlyAccess
+      Events:
+        api1BBC17DAPOSTlog:
+          Type: Api
+          Properties:
+            Path: /log
+            Method: POST
+            RestApiId: !Ref api1BBC17DA
 Parameters:
   StackTagName:
     Type: String
