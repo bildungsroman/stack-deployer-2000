@@ -7,30 +7,29 @@
 console.log('Loading Lambda Bash function');
 
 /* aws lambda handler */
-export function handler(event, context) {
+exports.handler = function(event, context) {
+  /* use spawn */
+  const util  = require('util'),
+        spawn = require('child_process').spawn,
 
-/* use spawn */
-const util  = require('util'),
-      spawn = require('child_process').spawn,
+      // ex: execute shell command
+      // bash = spawn('ls', ['-lh', '/usr']); // the second arg is the command 
+      // options
+      // MAIN: call the shell script
+      bash = spawn('./deploy.sh', ['', '']); // [''] place holders for args 
 
-    // ex: execute shell command
-    bash    = spawn('ls', ['-lh', '/usr']); // the second arg is the command 
-    // options
-    // MAIN: call the shell script
-    bash    = spawn('./deploy.sh', ['', '']); // [''] place holders for args 
-
-    bash.stdout.on('data', function (data) {    // stdout handler
-  	console.log('stdout: ' + data);
+      bash.stdout.on('data', function (data) {    // stdout handler
+        console.log('stdout: ' + data);
         context.succeed('stdout: ' + data);
-	});
+      });
 
     bash.stderr.on('data', function (data) {	// stderr handler
-	console.log('stderr: ' + data);
-        context.fail('stderr: ' + data);
-        context.fail('Something went wrong');
-	});
+      console.log('stderr: ' + data);
+      context.fail('stderr: ' + data);
+      context.fail('Something went wrong');
+    });
 
     bash.on('exit', function (code) {		// exit code handler
-	console.log('lambda bash exited with code ' + code);
-	});
+      console.log('lambda bash exited with code ' + code);
+    });
 }
