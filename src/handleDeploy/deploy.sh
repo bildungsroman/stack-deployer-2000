@@ -1,15 +1,41 @@
 #!/bin/bash
 # usage "bash ./deploy.sh production
+echo "Hello, World!" 
 
 # print commands before executing
-set -x
-# abort if command fails
-set -e
-# abort if pipe command fails
-set -o pipefail
+# set -x
+# # abort if command fails
+# set -e
+# # abort if pipe command fails
+# set -o pipefail
 
-echo "installing dependencies"
-npm install
+# echo "installing dependencies"
+# npm install
+
+# echo "building site"
+
+# timestamp=`date +'%s'`
+
+# cd /tmp
+# mkdir ./$timestamp
+# cd ./$timestamp
+# git clone $local_repo
+# cd ./stackery-ui-2
+# git remote add upstream git@github.com:$remote/stackery-ui-2.git
+
+# git fetch upstream
+# git checkout $branch
+# ln -s $local_repo/node_modules .
+# ls $local_repo/.env.* | grep -v '.env.prod' | grep -v '.env.stg1' | grep -v '.env.stg2' | xargs -I % cp -v % .
+# time npm install
+
+# echo "Building app"
+
+# time REACT_APP_ENV=$1 npm run build
+
+# echo "Uploading app"
+# time REACT_APP_ENV=$1 npm run upload
+# echo "done!"
 
 # echo "building blog site"
 # (
