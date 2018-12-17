@@ -27,7 +27,7 @@ Resources:
                 uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${function79FD8F5.Arn}/invocations
               responses: {}
           /log:
-            post:
+            get:
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
@@ -100,11 +100,11 @@ Resources:
       Policies:
         - AWSXrayWriteOnlyAccess
       Events:
-        api1BBC17DAPOSTlog:
+        api1BBC17DAGETlog:
           Type: Api
           Properties:
             Path: /log
-            Method: POST
+            Method: GET
             RestApiId: !Ref api1BBC17DA
     Metadata:
       StackeryName: logTester
