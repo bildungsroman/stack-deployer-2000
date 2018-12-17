@@ -90,8 +90,8 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-functionA3BAFDB
       Description: !Sub
         - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
-        - ResourceName: functionA3BAFDB
-      CodeUri: src/functionA3BAFDB
+        - ResourceName: logTester
+      CodeUri: src/logTester
       Handler: index.handler
       Runtime: nodejs8.10
       MemorySize: 3008
@@ -106,6 +106,8 @@ Resources:
             Path: /log
             Method: POST
             RestApiId: !Ref api1BBC17DA
+    Metadata:
+      StackeryName: logTester
   functionB2A1958:
     Type: AWS::Serverless::Function
     Properties:
