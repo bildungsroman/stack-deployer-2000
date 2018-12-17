@@ -19,6 +19,13 @@ Resources:
                 type: aws_proxy
                 uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${function35F9596B.Arn}/invocations
               responses: {}
+          /test:
+            post:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${function79FD8F5.Arn}/invocations
+              responses: {}
       EndpointConfiguration: REGIONAL
     Metadata:
       StackeryName: triggerDeploy
@@ -46,6 +53,30 @@ Resources:
             RestApiId: !Ref api1BBC17DA
     Metadata:
       StackeryName: handleDeploy
+  function79FD8F5:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-function79FD8F5
+      Description: !Sub
+        - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
+        - ResourceName: testDeploy
+      CodeUri: src/testDeploy
+      Handler: index.handler
+      Runtime: nodejs8.10
+      MemorySize: 3008
+      Timeout: 30
+      Tracing: Active
+      Policies:
+        - AWSXrayWriteOnlyAccess
+      Events:
+        api1BBC17DAPOSTtest:
+          Type: Api
+          Properties:
+            Path: /test
+            Method: POST
+            RestApiId: !Ref api1BBC17DA
+    Metadata:
+      StackeryName: testDeploy
 Parameters:
   StackTagName:
     Type: String
