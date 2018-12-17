@@ -7,6 +7,7 @@ exports.handler = function(event, context, callback) {
       console.error(error);
       return;
     }
+    console.log("Doing things");
     console.log(stdout);
     console.log(stderr);
   });
