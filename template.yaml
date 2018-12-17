@@ -44,7 +44,7 @@ Resources:
         - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
         - ResourceName: handleDeploy
       CodeUri: src/handleDeploy
-      Handler: index.stackDeployer
+      Handler: index.handler
       Runtime: nodejs8.10
       MemorySize: 3008
       Timeout: 30
