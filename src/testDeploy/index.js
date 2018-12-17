@@ -11,4 +11,5 @@ exports.handler = function(event, context, callback) {
     console.log(stdout);
     console.log(stderr);
   });
+  console.log("Did things");
 }
