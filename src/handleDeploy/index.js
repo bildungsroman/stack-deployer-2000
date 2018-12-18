@@ -44,16 +44,15 @@ exports.handler = async (event, context, callback) => {
 
   console.log(child);
 
-  // spawn('echo $PWD && ls -l && env && cd /tmp && echo $PWD', [], {}, (error, stdout, stderr) => {
-  //   if (error) {
-  //     console.error(`spawnSync error: ${error}`);
-  //     callback(error);
-  //   }
-  //   console.log(`stdout: ${stdout}`);
-  //   console.log(`stderr: ${stderr}`);
+  // return a 200 response if the GitHub tokens match
+  const response = {
+    statusCode: 200,
+    body: JSON.stringify({
+      input: event,
+    }),
+  };
 
-  //   callback(null, stdout);
-  // });
+  return response;
 }
 
 // process.env.AWS_ACCESS_KEY_ID, process.env.AWS_SECRET_ACCESS_KEY, process.env.AWS_SESSION_TOKEN are all available!
