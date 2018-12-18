@@ -4,6 +4,7 @@ exports.handler = function(event, context, callback) {
   const AWS = require('aws-sdk');
   // use spawnSync to execute the bash process
   const spawn = require('child_process').spawnSync;
+  const execFile = require('child_process').execFile;
   // get the GitHub secret from the environment variables
   const token = process.env.GITHUB_WEBHOOK_SECRET;
   // get the remaining variables from the GitHub event
@@ -33,11 +34,15 @@ exports.handler = function(event, context, callback) {
   console.log(`This is the repo url we'll be using to deploy: ${url}.`);
 
   // spawnSync('./deploy.sh', (error, stdout, stderr) => {
-  let result = spawn('node', ['--version'], {
-    shell: true
+  const child = execFile('node', ['--version'], (error, stdout, stderr) => {
+      if (error) {
+          console.error('stderr', stderr);
+          throw error;
+      }
+      console.log('stdout', stdout);
   });
 
-  console.log(result);
+  console.log(child);
 
   // spawn('echo $PWD && ls -l && env && cd /tmp && echo $PWD', [], {}, (error, stdout, stderr) => {
   //   if (error) {
