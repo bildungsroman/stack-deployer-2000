@@ -2,6 +2,8 @@ process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'
 
 exports.handler = async (event, context, callback) => {
   const AWS = require('aws-sdk');
+  // https://github.com/pimterry/lambda-git
+  const lambdaGit = require('lambda-git');
   // use execFile to execute the bash process
   const execFile = require('child_process').execFile;
   // get the GitHub secret from the environment variables
@@ -23,7 +25,7 @@ exports.handler = async (event, context, callback) => {
       body: errMsg,
     });
   }
-
+  console.log(context);
   // Log to CloudWatch
   console.log('---------------------------------');
   console.log(`Github-Event: "${githubEvent}" on this repo: "${repo}".`);
@@ -31,6 +33,7 @@ exports.handler = async (event, context, callback) => {
   console.log(`This is the repo url we'll be using to deploy: ${url}.`);
   console.log('---------------------------------');
 
+	await lambdaGit();
   const child = execFile('git', ['--version'], (error, stdout, stderr) => {
     if (error) {
         console.error('stderr', stderr);
