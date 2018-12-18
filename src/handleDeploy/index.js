@@ -33,17 +33,22 @@ exports.handler = function(event, context, callback) {
   console.log(`This is the repo url we'll be using to deploy: ${url}.`);
 
   // spawnSync('./deploy.sh', (error, stdout, stderr) => {
-  spawn('echo $PWD && ls -l && env && cd /tmp && echo $PWD', [], {}, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`spawnSync error: ${error}`);
-      callback(error);
-    }
-    console.log(`stdout: ${stdout}`);
-    console.log(`stderr: ${stderr}`);
-
-    callback(null, stdout);
+  let result = spawn('node', ['--version'], {
+    shell: true
   });
-}
 
+  console.log(result);
+
+  // spawn('echo $PWD && ls -l && env && cd /tmp && echo $PWD', [], {}, (error, stdout, stderr) => {
+  //   if (error) {
+  //     console.error(`spawnSync error: ${error}`);
+  //     callback(error);
+  //   }
+  //   console.log(`stdout: ${stdout}`);
+  //   console.log(`stderr: ${stderr}`);
+
+  //   callback(null, stdout);
+  // });
+}
 
 // process.env.AWS_ACCESS_KEY_ID, process.env.AWS_SECRET_ACCESS_KEY, process.env.AWS_SESSION_TOKEN are all available!
