@@ -1,6 +1,6 @@
 process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'];
 
-exports.handler = function(event, context, callback) {
+exports.handler = async (event, context, callback) => {
   const AWS = require('aws-sdk');
   // use spawnSync to execute the bash process
   const spawn = require('child_process').spawnSync;
