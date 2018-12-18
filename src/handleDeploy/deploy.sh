@@ -5,9 +5,10 @@ echo "Hello, World!"
 print commands before executing
 set -x
 # # abort if command fails
-# set -e
+set -e
 # # abort if pipe command fails
-# set -o pipefail
+set -o pipefail
+
 echo $PWD && ls -l && env
 
 echo "building site"
