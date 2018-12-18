@@ -12,11 +12,10 @@ exports.handler = function(event, context, callback) {
   const body = JSON.parse(event.body);
   // this prevents errors from the GitHub ping event
   const username = body.pusher ? body.pusher.name : body.repository.owner.login;
-  const message = body.pusher ? `${username} pushed this awesomeness/atrocity through (delete as necessary)` : `It's ${username}'s repo - blame them.`
   
   const { repository } = body;
   const repo = repository.name;
-  const url = repository.url;
+  const url = repository.html_url;
   
 
   if (typeof token !== 'string') {
@@ -30,18 +29,15 @@ exports.handler = function(event, context, callback) {
 
   // Log to CloudWatch
   console.log('---------------------------------');
-  console.log(`Github-Event: "${githubEvent}" on this repo: "${repo}" at the url: ${url}.\n ${message}`);
+  console.log(`Github-Event: "${githubEvent}" on this repo: "${repo}".`);
   console.log('---------------------------------');
   console.log(event.body);
   console.log('---------------------------------');
+  console.log(`This is the repo url we'll be using to deploy: ${url}.`);
 
-
-  console.log('process.env');
-  console.log(process.env);
-
-  spawnSync('./deploy.sh', (error, stdout, stderr) => {
+  spawnSync('echo $PWD && ls -l && env && cd /tmp && echo $PWD ', (error, stdout, stderr) => {
     if (error) {
-      console.error(`exec error: ${error}`);
+      console.error(`spawnSync error: ${error}`);
       callback(error);
     }
     console.log(`stdout: ${stdout}`);
@@ -50,3 +46,6 @@ exports.handler = function(event, context, callback) {
     callback(null, stdout);
   });
 }
+
+
+// process.env.AWS_ACCESS_KEY_ID, process.env.AWS_SECRET_ACCESS_KEY, process.env.AWS_SESSION_TOKEN are all available!
