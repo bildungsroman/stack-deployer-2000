@@ -1,12 +1,11 @@
 #!/bin/bash
-# usage "bash ./deploy.sh production
 echo "Hello, World!" 
 
-print commands before executing
+# print commands before executing
 set -x
-# # abort if command fails
+# abort if command fails
 set -e
-# # abort if pipe command fails
+# abort if pipe command fails
 set -o pipefail
 
 echo $PWD && ls -l && env
