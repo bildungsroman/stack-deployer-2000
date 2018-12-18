@@ -25,7 +25,7 @@ exports.handler = async (event, context, callback) => {
       body: errMsg,
     });
   }
-  console.log(context);
+
   // Log to CloudWatch
   console.log('---------------------------------');
   console.log(`Github-Event: "${githubEvent}" on this repo: "${repo}".`);
@@ -34,15 +34,20 @@ exports.handler = async (event, context, callback) => {
   console.log('---------------------------------');
 
 	await lambdaGit();
-  const child = execFile('git', ['--version'], (error, stdout, stderr) => {
+  await execFile('git', [`clone ${repo}`], (error, stdout, stderr) => {
     if (error) {
         console.error('stderr', stderr);
         throw error;
     }
     console.log('stdout', stdout);
   });
-
-  console.log(child);
+  await execFile('ls', ['-l'], (error, stdout, stderr) => {
+    if (error) {
+        console.error('stderr', stderr);
+        throw error;
+    }
+    console.log('stdout', stdout);
+  });
 
   // return a 200 response if the GitHub tokens match
   const response = {

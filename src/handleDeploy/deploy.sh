@@ -20,7 +20,7 @@ cd /tmp
 # cd ./stackery-ui-2
 # git remote add upstream git@github.com:$remote/stackery-ui-2.git
 
-echo "installing dependencies"
+echo "installing aws"
 npm install
 
 echo "testing aws"
