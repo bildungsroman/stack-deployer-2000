@@ -2,26 +2,29 @@
 # usage "bash ./deploy.sh production
 echo "Hello, World!" 
 
-# print commands before executing
-# set -x
+print commands before executing
+set -x
 # # abort if command fails
 # set -e
 # # abort if pipe command fails
 # set -o pipefail
+echo $PWD && ls -l && env
 
-# echo "installing dependencies"
-# npm install
+echo "building site"
+timestamp=`date +'%s'`
 
-# echo "building site"
-
-# timestamp=`date +'%s'`
-
-# cd /tmp
+cd /tmp
 # mkdir ./$timestamp
 # cd ./$timestamp
 # git clone $local_repo
 # cd ./stackery-ui-2
 # git remote add upstream git@github.com:$remote/stackery-ui-2.git
+
+echo "installing dependencies"
+npm install
+
+echo "testing aws"
+aws
 
 # git fetch upstream
 # git checkout $branch
