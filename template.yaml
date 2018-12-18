@@ -128,6 +128,25 @@ Resources:
         - AWSXrayWriteOnlyAccess
     Metadata:
       StackeryName: lambdaBash
+  functionBBD9C52E:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-functionBBD9C52E
+      Description: !Sub
+        - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
+        - ResourceName: bashFunction
+      CodeUri: src/bashFunction
+      Handler: index.handler
+      Runtime: nodejs8.10
+      MemorySize: 3008
+      Timeout: 30
+      Tracing: Active
+      Policies:
+        - AWSXrayWriteOnlyAccess
+      Layers:
+        - arn:aws:lambda:us-west-2:744348701589:layer:bash:4
+    Metadata:
+      StackeryName: bashFunction
 Parameters:
   StackTagName:
     Type: String
