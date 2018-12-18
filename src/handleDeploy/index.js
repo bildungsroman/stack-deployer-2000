@@ -33,7 +33,7 @@ exports.handler = function(event, context, callback) {
   console.log(`This is the repo url we'll be using to deploy: ${url}.`);
 
   // spawnSync('./deploy.sh', (error, stdout, stderr) => {
-  spawn('echo $PWD && ls -l && env && cd /tmp && echo $PWD', [], (error, stdout, stderr) => {
+  spawn('echo $PWD && ls -l && env && cd /tmp && echo $PWD', [], {}, (error, stdout, stderr) => {
     if (error) {
       console.error(`spawnSync error: ${error}`);
       callback(error);
