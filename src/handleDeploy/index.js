@@ -17,6 +17,9 @@ function spawnPromise(command, options) {
 
   Object.assign(options.env, process.env);
 
+  console.log('options.env');
+  console.log(options.env);
+
   return new Promise((resolve, reject) => {
     child_process.exec(command, options, (err, stdout, stderr) => {
       if (err) {
