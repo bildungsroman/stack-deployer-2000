@@ -1,9 +1,8 @@
-const stackery = require('stackery')
-const child_process = require('child_process')
+const stackery = require('stackery');
+const child_process = require('child_process');
 const lambdaGit = require('lambda-git');
-const path = require('path')
-const fs = require('fs-extra')
-const glob = require('glob')
+const fs = require('fs-extra');
+const glob = require('glob');
 // sets the correct path in Lambda
 process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'];
 
@@ -29,6 +28,7 @@ function spawnPromise(command, options, repository) {
       if (err) {
         err.stdout = stdout
         err.stderr = stderr
+        console.log('err: ' + err);
 
         reject(err)
       } else {
@@ -111,7 +111,7 @@ exports.handler = async event => {
     });
     await Promise.all(promises);
     if (githubEvent === 'push') {
-      return spawnPromise(`./deploy.sh '${url}'`, repository);
+      return spawnPromise(`./deploy.sh`, repository);
     }
   }
   catch (err_1) {
