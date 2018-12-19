@@ -5,12 +5,9 @@ const fs = require('fs-extra');
 const glob = require('glob');
 // sets the correct path in Lambda
 process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'];
-let data;
 
-function spawnPromise(command, options, data) {
+function spawnPromise(command, options) {
   console.log(`Running \`${command}\`...`);
-  console.log('data');
-  console.log(data);
 
   options = options || {};
 
@@ -19,12 +16,6 @@ function spawnPromise(command, options, data) {
   };
 
   Object.assign(options.env, process.env);
-
-  options.env.GIT_AUTHOR_EMAIL = data.repository.owner.email;
-  options.env.GIT_AUTHOR_NAME = data.repository.owner.name;
-  options.env.GIT_COMMITTER_EMAIL = options.env.GIT_AUTHOR_EMAIL;
-  options.env.GIT_COMMITTER_NAME = options.env.GIT_AUTHOR_NAME;
-  options.env.GIT_TERMINAL_PROMPT = 0;
 
   return new Promise((resolve, reject) => {
     child_process.exec(command, options, (err, stdout, stderr) => {
@@ -48,7 +39,6 @@ exports.handler = async event => {
   const headers = event.headers;
   const githubEvent = headers['X-GitHub-Event'];
   const body = JSON.parse(event.body);
-  data = body;
   const { repository } = body;
   const repo = repository.name;
   const url = repository.html_url;
@@ -83,7 +73,7 @@ exports.handler = async event => {
   });
 
   try {
-    await spawnPromise(`./build.sh '${url}.git' '${localRepoDir}'`, data);
+    await spawnPromise(`./build.sh '${url}.git' '${localRepoDir}'`);
     let files = glob.sync('**/*', { cwd: `${localRepoDir}/build`, nodir: true, dot: true });
     console.log('Success clone, install, and build: ', files, files.length);
     const promises = files.map((file) => {
@@ -116,7 +106,7 @@ exports.handler = async event => {
     await Promise.all(promises);
     // only trigger deploy for a 'push' event
     if (githubEvent === 'push') {
-      return spawnPromise(`./deploy.sh`, data);
+      return spawnPromise(`./deploy.sh`);
     }
   }
   catch (err_1) {
