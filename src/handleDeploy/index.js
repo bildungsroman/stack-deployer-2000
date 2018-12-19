@@ -22,7 +22,6 @@ function spawnPromise(command, options) {
       if (err) {
         err.stdout = stdout
         err.stderr = stderr
-        console.log('err: ' + err);
 
         reject(err)
       } else {
