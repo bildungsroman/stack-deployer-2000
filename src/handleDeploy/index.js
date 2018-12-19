@@ -36,7 +36,7 @@ exports.handler = async (event, context, callback) => {
 	await lambdaGit({
     targetDirectory: '/tmp'
   });
-  await execFile('git', [`clone ${url}.git`], (error, stdout, stderr) => {
+  await execFile('git clone', [`${url}.git`], (error, stdout, stderr) => {
     if (error) {
       console.error('stderr', stderr);
     }
