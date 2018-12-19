@@ -33,18 +33,18 @@ exports.handler = async (event, context, callback) => {
   console.log(`This is the repo url we'll be using to deploy: ${url}.`);
   console.log('---------------------------------');
 
-	await lambdaGit();
-  await execFile('git', [`clone ${url}`], (error, stdout, stderr) => {
+	await lambdaGit({
+    targetDirectory: '/tmp'
+  });
+  await execFile('git', [`clone ${url}.git`], (error, stdout, stderr) => {
     if (error) {
-        console.error('stderr', stderr);
-        throw error;
+      console.error('stderr', stderr);
     }
     console.log('stdout', stdout);
   });
   await execFile('ls', ['-l'], (error, stdout, stderr) => {
     if (error) {
-        console.error('stderr', stderr);
-        throw error;
+      console.error('stderr', stderr);
     }
     console.log('stdout', stdout);
   });
