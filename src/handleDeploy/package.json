@@ -3,6 +3,7 @@
   "dependencies": {
     "aws-sdk": "~2",
     "lambda-git": "^0.1.2",
-    "stackery": "^2.1.0"
+    "fs-extra": "^7.0.1",
+    "glob": "^7.1.3"
   }
 }
