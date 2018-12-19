@@ -5,46 +5,26 @@ echo "Hello, World!"
 set -x
 # abort if command fails
 set -e
-# abort if pipe command fails
-set -o pipefail
 
-echo $PWD && ls -l && env
+repo=$1
+localRepoDir=$2
 
-cd /tmp && echo $PWD && export HOME='/tmp'
+echo 'localRepoDir: ' $localRepoDir ', repo: ' $repo
 
-echo "building site"
-timestamp=`date +'%s'`
+cd $localRepoDir
 
-cd /tmp
-# mkdir ./$timestamp
-# cd ./$timestamp
-# git clone $local_repo
-# cd ./stackery-ui-2
-# git remote add upstream git@github.com:$remote/stackery-ui-2.git
+git 'init'
 
-echo "installing aws"
-npm install 
+git remote add origin $repo
 
-echo "testing aws"
-aws
+git fetch origin master
 
-# git fetch upstream
-# git checkout $branch
-# ln -s $local_repo/node_modules .
-# ls $local_repo/.env.* | grep -v '.env.prod' | grep -v '.env.stg1' | grep -v '.env.stg2' | xargs -I % cp -v % .
-# time npm install
+git reset --hard FETCH_HEAD 
 
-# echo "Building app"
+npm install --no-progress --loglevel=error --cache '/tmp/npm' --userconfig '/tmp/npmrc'
 
-# time REACT_APP_ENV=$1 npm run build
+token=$1
+cdnUrl=$2
+postUrl=$3
 
-# echo "Uploading app"
-# time REACT_APP_ENV=$1 npm run upload
-# echo "done!"
-
-# echo -e "\033[1;33mGenerating website conf\033[0;0m"
-# ruby generate_website_conf.rb $1 > /tmp/$$.json
-# echo -e "\033[1;33mUpdating website conf\033[0;0m"
-# aws s3api put-bucket-website --bucket $bucket --profile prod --website-configuration "file:///tmp/$$.json"
-# echo -e "\033[1;33mDeploying static files\033[0;0m"
-# aws s3 sync _site/ s3://$bucket --profile prod --acl public-read --delete
+curl --user "stackery-bot:$token" -H "Content-Type: application/json" --request POST --data '{"body": "Build preview: \n '"$cdnUrl"'"}' $postUrl
