@@ -10,6 +10,8 @@ set -o pipefail
 
 echo $PWD && ls -l && env
 
+cd /tmp && echo $PWD && export HOME='/tmp'
+
 echo "building site"
 timestamp=`date +'%s'`
 
@@ -21,7 +23,7 @@ cd /tmp
 # git remote add upstream git@github.com:$remote/stackery-ui-2.git
 
 echo "installing aws"
-npm install
+npm install 
 
 echo "testing aws"
 aws

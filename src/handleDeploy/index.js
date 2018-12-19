@@ -15,6 +15,8 @@ exports.handler = async (event, context, callback) => {
   const { repository } = body;
   const repo = repository.name;
   const url = repository.html_url;
+
+  process.env['GIT_URL'] = url;
   
   // check for secret
   if (typeof token !== 'string') {
@@ -26,6 +28,9 @@ exports.handler = async (event, context, callback) => {
     });
   }
 
+  console.log('process.env');
+  console.log(process.env);
+  
   // Log to CloudWatch
   console.log('---------------------------------');
   console.log(`Github-Event: "${githubEvent}" on this repo: "${repo}".`);
@@ -36,6 +41,7 @@ exports.handler = async (event, context, callback) => {
 	await lambdaGit({
     targetDirectory: '/tmp'
   });
+  await execFile('cd /tmp && echo $PWD && export HOME="/tmp"');
   await execFile('git clone', [`${url}.git`], (error, stdout, stderr) => {
     if (error) {
       console.error('error', error);
