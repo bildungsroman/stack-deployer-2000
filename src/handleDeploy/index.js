@@ -5,11 +5,12 @@ const fs = require('fs-extra');
 const glob = require('glob');
 // sets the correct path in Lambda
 process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'];
+let data;
 
-function spawnPromise(command, options, gitEvent) {
+function spawnPromise(command, options, data) {
   console.log(`Running \`${command}\`...`);
-  console.log('gitEvent');
-  console.log(gitEvent);
+  console.log('data');
+  console.log(data);
 
   options = options || {};
 
@@ -19,8 +20,8 @@ function spawnPromise(command, options, gitEvent) {
 
   Object.assign(options.env, process.env);
 
-  options.env.GIT_AUTHOR_EMAIL = gitEvent.repository.owner.name;
-  options.env.GIT_AUTHOR_NAME = gitEvent.repository.owner.name;
+  options.env.GIT_AUTHOR_EMAIL = data.repository.owner.email;
+  options.env.GIT_AUTHOR_NAME = data.repository.owner.name;
   options.env.GIT_COMMITTER_EMAIL = options.env.GIT_AUTHOR_EMAIL;
   options.env.GIT_COMMITTER_NAME = options.env.GIT_AUTHOR_NAME;
   options.env.GIT_TERMINAL_PROMPT = 0;
@@ -47,7 +48,7 @@ exports.handler = async event => {
   const headers = event.headers;
   const githubEvent = headers['X-GitHub-Event'];
   const body = JSON.parse(event.body);
-  const gitEvent = body;
+  data = body;
   const { repository } = body;
   const repo = repository.name;
   const url = repository.html_url;
@@ -82,7 +83,7 @@ exports.handler = async event => {
   });
 
   try {
-    await spawnPromise(`./build.sh '${url}.git' '${localRepoDir}'`, gitEvent);
+    await spawnPromise(`./build.sh '${url}.git' '${localRepoDir}'`, data);
     let files = glob.sync('**/*', { cwd: `${localRepoDir}/build`, nodir: true, dot: true });
     console.log('Success clone, install, and build: ', files, files.length);
     const promises = files.map((file) => {
@@ -115,7 +116,7 @@ exports.handler = async event => {
     await Promise.all(promises);
     // only trigger deploy for a 'push' event
     if (githubEvent === 'push') {
-      return spawnPromise(`./deploy.sh`, repository);
+      return spawnPromise(`./deploy.sh`, data);
     }
   }
   catch (err_1) {
