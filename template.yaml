@@ -12,26 +12,26 @@ Resources:
         openapi: '3.0'
         info: {}
         paths:
-          /webhook:
+          /test:
+            post:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${functionBBD9C52E.Arn}/invocations
+              responses: {}
+          /prod:
             post:
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
                 uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${function35F9596B.Arn}/invocations
               responses: {}
-          /test:
+          /staging:
             post:
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${function79FD8F5.Arn}/invocations
-              responses: {}
-          /log:
-            get:
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${functionA3BAFDB.Arn}/invocations
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${functionBBD9C52E.Arn}/invocations
               responses: {}
       EndpointConfiguration: REGIONAL
     Metadata:
@@ -51,83 +51,18 @@ Resources:
       Tracing: Active
       Policies:
         - AWSXrayWriteOnlyAccess
-      Events:
-        api1BBC17DAPOSTwebhook:
-          Type: Api
-          Properties:
-            Path: /webhook
-            Method: POST
-            RestApiId: !Ref api1BBC17DA
       Environment:
         Variables:
           GITHUB_WEBHOOK_SECRET: !Ref EnvConfiggithubSecretAsString
-    Metadata:
-      StackeryName: handleDeploy
-  function79FD8F5:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-function79FD8F5
-      Description: !Sub
-        - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
-        - ResourceName: testDeploy
-      CodeUri: src/testDeploy
-      Handler: index.handler
-      Runtime: nodejs8.10
-      MemorySize: 3008
-      Timeout: 30
-      Tracing: Active
-      Policies:
-        - AWSXrayWriteOnlyAccess
       Events:
-        api1BBC17DAPOSTtest:
+        api1BBC17DAPOSTprod:
           Type: Api
           Properties:
-            Path: /test
+            Path: /prod
             Method: POST
             RestApiId: !Ref api1BBC17DA
     Metadata:
-      StackeryName: testDeploy
-  functionA3BAFDB:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-functionA3BAFDB
-      Description: !Sub
-        - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
-        - ResourceName: logTester
-      CodeUri: src/logTester
-      Handler: index.handler
-      Runtime: nodejs8.10
-      MemorySize: 3008
-      Timeout: 30
-      Tracing: Active
-      Policies:
-        - AWSXrayWriteOnlyAccess
-      Events:
-        api1BBC17DAGETlog:
-          Type: Api
-          Properties:
-            Path: /log
-            Method: GET
-            RestApiId: !Ref api1BBC17DA
-    Metadata:
-      StackeryName: logTester
-  functionB2A1958:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-functionB2A1958
-      Description: !Sub
-        - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
-        - ResourceName: lambdaBash
-      CodeUri: src/lambdaBash
-      Handler: index.handler
-      Runtime: nodejs8.10
-      MemorySize: 3008
-      Timeout: 30
-      Tracing: Active
-      Policies:
-        - AWSXrayWriteOnlyAccess
-    Metadata:
-      StackeryName: lambdaBash
+      StackeryName: handleDeploy
   functionBBD9C52E:
     Type: AWS::Serverless::Function
     Properties:
@@ -145,6 +80,19 @@ Resources:
         - AWSXrayWriteOnlyAccess
       Layers:
         - arn:aws:lambda:us-west-2:744348701589:layer:bash:4
+      Events:
+        api1BBC17DAPOSTtest:
+          Type: Api
+          Properties:
+            Path: /test
+            Method: POST
+            RestApiId: !Ref api1BBC17DA
+        api1BBC17DAPOSTstaging:
+          Type: Api
+          Properties:
+            Path: /staging
+            Method: POST
+            RestApiId: !Ref api1BBC17DA
     Metadata:
       StackeryName: bashFunction
 Parameters:
