@@ -7,21 +7,23 @@ const glob = require('glob');
 process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'];
 
 function spawnPromise(command, options, repository) {
-  console.log(`Running \`${command}\`...`)
+  console.log(`Running \`${command}\`...`);
+  console.log('repository');
+  console.log(repository);
 
-  options = options || {}
+  options = options || {};
 
   if (!options.env) {
     options.env = {}
-  }
+  };
 
-  Object.assign(options.env, process.env)
+  Object.assign(options.env, process.env);
 
-  options.env.GIT_AUTHOR_EMAIL = repository.owner.name
-  options.env.GIT_AUTHOR_NAME = repository.owner.name
-  options.env.GIT_COMMITTER_EMAIL = options.env.GIT_AUTHOR_EMAIL
-  options.env.GIT_COMMITTER_NAME = options.env.GIT_AUTHOR_NAME
-  options.env.GIT_TERMINAL_PROMPT = 0
+  options.env.GIT_AUTHOR_EMAIL = repository.owner.name;
+  options.env.GIT_AUTHOR_NAME = repository.owner.name;
+  options.env.GIT_COMMITTER_EMAIL = options.env.GIT_AUTHOR_EMAIL;
+  options.env.GIT_COMMITTER_NAME = options.env.GIT_AUTHOR_NAME;
+  options.env.GIT_TERMINAL_PROMPT = 0;
 
   return new Promise((resolve, reject) => {
     child_process.exec(command, options, (err, stdout, stderr) => {
@@ -63,7 +65,7 @@ exports.handler = async event => {
   console.log('---------------------------------');
   console.log(`Github-Event: "${githubEvent}" on this repo: "${repo}".`);
   console.log('---------------------------------');
-  console.log(`This is the repo url we'll be using to deploy: ${url}.`);
+  console.log(`This is the repo url we'll be using to deploy: ${url}.git.`);
   console.log('---------------------------------');
 
   // pass on git url
