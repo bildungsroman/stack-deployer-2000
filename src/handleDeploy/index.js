@@ -38,11 +38,13 @@ exports.handler = async (event, context, callback) => {
   });
   await execFile('git clone', [`${url}.git`], (error, stdout, stderr) => {
     if (error) {
+      console.error('error', error);
       console.error('stderr', stderr);
     }
+    console.log(`ran git clone ${url}.git`);
     console.log('stdout', stdout);
   });
-  await execFile('ls', ['-l'], (error, stdout, stderr) => {
+  await execFile('ls', [], (error, stdout, stderr) => {
     if (error) {
       console.error('stderr', stderr);
     }
