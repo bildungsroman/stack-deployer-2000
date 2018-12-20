@@ -43,6 +43,7 @@ exports.handler = async event => {
   const body = JSON.parse(event.body);
   const { repository } = body;
   const repo = repository.name;
+  const cloneUrl = repository.ssh_url;
   const url = repository.html_url;
 
   // check for GitHub secret
@@ -59,7 +60,7 @@ exports.handler = async event => {
   console.log('---------------------------------');
   console.log(`Github-Event: "${githubEvent}" on this repo: "${repo}".`);
   console.log('---------------------------------');
-  console.log(`This is the repo url we'll be using to deploy: ${url}.git.`);
+  console.log(`This is the repo url we'll be using to deploy: ${url}.git, clone url: ${cloneUrl}`);
   console.log('---------------------------------');
 
   // pass on git url
@@ -75,9 +76,11 @@ exports.handler = async event => {
   });
 
   try {
-    await spawnPromise(`./build.sh '${url}.git' '${localRepoDir}'`);
+    await spawnPromise(`./build.sh '${cloneUrl}' '${localRepoDir}'`);
     let files = glob.sync('**/*', { cwd: `${localRepoDir}/build`, nodir: true, dot: true });
     console.log('Success clone, install, and build: ', files, files.length);
+    console.log('stackery');
+    console.log(stackery);
     const promises = files.map((file) => {
       console.log('promise', file);
       const patternHtml = /\.html$/i;

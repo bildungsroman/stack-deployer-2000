@@ -1,5 +1,4 @@
 #!/bin/bash
-echo "Hello, World!" 
 
 # print commands before executing
 set -x
@@ -15,7 +14,7 @@ cd $localRepoDir
 
 git 'init'
 
-git remote add origin $repo
+git clone $repo
 
 git fetch origin master
 
