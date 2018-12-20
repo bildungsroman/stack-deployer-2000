@@ -45,7 +45,9 @@ exports.handler = async event => {
   const { repository } = body;
   const repo = repository.name;
   const url = repository.html_url;
-  const owner = repository.owner.name;
+  // this will be valid in prod
+  // const owner = repository.owner.name;
+  const owner = repository.owner.name ? repository.owner.name : repository.owner.login;
 
   // check for GitHub secret
   if (typeof secret !== 'string') {
@@ -77,7 +79,7 @@ exports.handler = async event => {
   });
 
   try {
-    await spawnPromise(`./build.sh 'https://${owner}:${token}@github.com/${owner}/${repo}.git' '${localRepoDir}' '${repo}'`);
+    await spawnPromise(`./build.sh 'https://${owner}:${token}@github.com/${owner}/${repo}.git' '${localRepoDir}' '${repo}' 'getWelcomePage'`);
     let files = glob.sync('**/*', { cwd: `${localRepoDir}/build`, nodir: true, dot: true });
     console.log('Success clone, install, and build: ', files, files.length);
     console.log('stackery');
