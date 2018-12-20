@@ -1,8 +1,6 @@
-const stackery = require('stackery');
 const child_process = require('child_process');
 const lambdaGit = require('lambda-git');
 const fs = require('fs-extra');
-const glob = require('glob');
 // sets the correct path in Lambda
 process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'];
 
@@ -80,41 +78,30 @@ exports.handler = async event => {
 
   try {
     await spawnPromise(`./build.sh 'https://${owner}:${token}@github.com/${owner}/${repo}.git' '${localRepoDir}' '${repo}' 'getWelcomePage'`);
-    let files = glob.sync('**/*', { cwd: `${localRepoDir}/build`, nodir: true, dot: true });
-    console.log('Success clone, install, and build: ', files, files.length);
-    console.log('stackery');
-    console.log(stackery);
-    const promises = files.map((file) => {
-      console.log('promise', file);
-      const patternHtml = /\.html$/i;
-      const patternJs = /.*\.js$/;
-      const patternCss = /.*\.css$/i;
-      const patternSvg = /.*\.svg$/i;
-      const metadata = {};
-      if (patternHtml.test(file)) {
-        metadata['Content-Type'] = 'text/html';
-        metadata['Cache-Control'] = 'no-cache';
-      }
-      else if (patternCss.test(file)) {
-        metadata['Content-Type'] = 'text/css';
-      }
-      else if (patternJs.test(file)) {
-        metadata['Content-Type'] = 'application/javascript';
-      }
-      else if (patternSvg.test(file)) {
-        metadata['Content-Type'] = 'image/svg+xml';
-      }
-      return stackery.output({
-        action: 'put',
-        key: `${prNumber}/${file}`,
-        body: fs.readFileSync(`${localRepoDir}/build/${file}`),
-        metadata: metadata
-      });
+    // check if files there
+    const spawn = child_process.spawn
+    bash = spawn('ls', ['-lh']);
+
+    bash.stdout.on('data', function (data) {    // stdout handler
+      console.log('stdout: ' + data);
+      context.succeed('stdout: ' + data);
     });
-    await Promise.all(promises);
+
+    bash.stderr.on('data', function (data) {	// stderr handler
+      console.log('stderr: ' + data);
+      context.fail('stderr: ' + data);
+      context.fail('Something went wrong');
+    });
+
+    bash.on('exit', function (code) {		// exit code handler
+      console.log('lambda bash exited with code ' + code);
+    });
+
+    console.log('Success clone, install, and build: ', bash, bash.length);
+
     // only trigger deploy for a 'push' event
     if (githubEvent === 'push') {
-      return spawnPromise(`./deploy.sh`);
+      await spawnPromise(`./deploy.sh '${repo}' 'development'`);
     }
   }
   catch (err_1) {
