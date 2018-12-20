@@ -35,19 +35,19 @@ function spawnPromise(command, options) {
 }
 
 exports.handler = async event => {
-  // get the GitHub secret from the environment variables
-  const token = process.env.GITHUB_WEBHOOK_SECRET;
+  // get the GitHub secret and token from the environment variables
+  const secret = process.env.GITHUB_WEBHOOK_SECRET;
+  const token = process.env.GITHUB_TOKEN;
   // get the remaining variables from the GitHub event
   const headers = event.headers;
   const githubEvent = headers['X-GitHub-Event'];
   const body = JSON.parse(event.body);
   const { repository } = body;
   const repo = repository.name;
-  const cloneUrl = repository.ssh_url;
   const url = repository.html_url;
 
   // check for GitHub secret
-  if (typeof token !== 'string') {
+  if (typeof secret !== 'string') {
     let errMsg = 'Must provide a \'GITHUB_WEBHOOK_SECRET\' env variable';
     return callback(null, {
       statusCode: 401,
@@ -60,7 +60,7 @@ exports.handler = async event => {
   console.log('---------------------------------');
   console.log(`Github-Event: "${githubEvent}" on this repo: "${repo}".`);
   console.log('---------------------------------');
-  console.log(`This is the repo url we'll be using to deploy: ${url}.git, clone url: ${cloneUrl}`);
+  console.log(`This is the repo url we'll be using to deploy: ${url}.git`);
   console.log('---------------------------------');
 
   // pass on git url
@@ -76,7 +76,7 @@ exports.handler = async event => {
   });
 
   try {
-    await spawnPromise(`./build.sh '${cloneUrl}' '${localRepoDir}'`);
+    await spawnPromise(`./build.sh 'https://${token}@github.com/${repo}.git' '${localRepoDir}'`);
     let files = glob.sync('**/*', { cwd: `${localRepoDir}/build`, nodir: true, dot: true });
     console.log('Success clone, install, and build: ', files, files.length);
     console.log('stackery');

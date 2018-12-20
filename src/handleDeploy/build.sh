@@ -16,8 +16,4 @@ git 'init'
 
 git clone $repo
 
-git fetch origin master
-
-git reset --hard FETCH_HEAD 
-
 npm install --no-progress --loglevel=error --cache '/tmp/npm' --userconfig '/tmp/npmrc'
