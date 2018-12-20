@@ -45,6 +45,7 @@ exports.handler = async event => {
   const { repository } = body;
   const repo = repository.name;
   const url = repository.html_url;
+  const owner = repository.owner.name;
 
   // check for GitHub secret
   if (typeof secret !== 'string') {
@@ -58,7 +59,7 @@ exports.handler = async event => {
   
   // Log git event to CloudWatch
   console.log('---------------------------------');
-  console.log(`Github-Event: "${githubEvent}" on this repo: "${repo}".`);
+  console.log(`Github-Event: "${githubEvent}" on this repo: "${owner}/${repo}".`);
   console.log('---------------------------------');
   console.log(`This is the repo url we'll be using to deploy: ${url}.git`);
   console.log('---------------------------------');
@@ -76,7 +77,7 @@ exports.handler = async event => {
   });
 
   try {
-    await spawnPromise(`./build.sh 'https://${token}@github.com/${repo}.git' '${localRepoDir}'`);
+    await spawnPromise(`./build.sh 'https://${owner}:${token}@github.com/${owner}/${repo}.git' '${localRepoDir}' '${repo}'`);
     let files = glob.sync('**/*', { cwd: `${localRepoDir}/build`, nodir: true, dot: true });
     console.log('Success clone, install, and build: ', files, files.length);
     console.log('stackery');
