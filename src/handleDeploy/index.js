@@ -15,8 +15,7 @@ function spawnPromise(command, options) {
 
   Object.assign(options.env, process.env);
 
-  console.log('options.env');
-  console.log(options.env);
+  console.log('process.env', process.env);
 
   return new Promise((resolve, reject) => {
     child_process.exec(command, options, (err, stdout, stderr) => {
@@ -26,6 +25,7 @@ function spawnPromise(command, options) {
 
         reject(err)
       } else {
+        console.log("Finished shell script", stdout, stderr)
         resolve({ stdout: stdout, stderr: stderr })
       }
     })
@@ -43,8 +43,7 @@ exports.handler = async event => {
   const { repository } = body;
   const repo = repository.name;
   const url = repository.html_url;
-  // this will be valid in prod
-  // const owner = repository.owner.name;
+  // so 'ping' events don't fail
   const owner = repository.owner.name ? repository.owner.name : repository.owner.login;
 
   // check for GitHub secret
@@ -78,27 +77,6 @@ exports.handler = async event => {
 
   try {
     await spawnPromise(`./build.sh 'https://${owner}:${token}@github.com/${owner}/${repo}.git' '${localRepoDir}' '${repo}' 'getWelcomePage'`);
-    // check if files there
-    const spawn = child_process.spawn
-    bash = spawn('ls', ['-lh']);
-
-    bash.stdout.on('data', function (data) {    // stdout handler
-      console.log('stdout: ' + data);
-      context.succeed('stdout: ' + data);
-    });
-
-    bash.stderr.on('data', function (data) {	// stderr handler
-      console.log('stderr: ' + data);
-      context.fail('stderr: ' + data);
-      context.fail('Something went wrong');
-    });
-
-    bash.on('exit', function (code) {		// exit code handler
-      console.log('lambda bash exited with code ' + code);
-    });
-
-    console.log('Success clone, install, and build: ', bash, bash.length);
-
     // only trigger deploy for a 'push' event
     if (githubEvent === 'push') {
       await spawnPromise(`./deploy.sh '${repo}' 'development'`);

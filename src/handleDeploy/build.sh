@@ -21,3 +21,5 @@ git clone $repo
 cd $localRepoDir/$repoName/src/$functionName
 
 npm install --no-progress --loglevel=error --cache '/tmp/npm' --userconfig '/tmp/npmrc'
+
+ls -l

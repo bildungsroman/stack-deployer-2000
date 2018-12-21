@@ -8,4 +8,4 @@ stackEnv=$2
 
 stackery deploy --stack-name $stackName \
 --env-name $stackEnv \
---git-ref 'master'
+--git-ref 'master' --non-interactive
