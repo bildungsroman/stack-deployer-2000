@@ -83,7 +83,7 @@ exports.handler = async event => {
     }
   }
   catch (err_1) {
-    console.log('error', err_1);
+    console.log('another error', err_1);
   }
 
   // return a 200 response if the GitHub tokens match
