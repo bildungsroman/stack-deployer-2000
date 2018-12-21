@@ -1,6 +1,7 @@
 const child_process = require('child_process');
 const lambdaGit = require('lambda-git');
 const fs = require('fs-extra');
+const stackery = require('stackery');
 // sets the correct path in Lambda
 process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'];
 
@@ -76,11 +77,11 @@ exports.handler = async event => {
   });
 
   try {
-    await spawnPromise(`./build.sh 'https://${owner}:${token}@github.com/${owner}/${repo}.git' '${localRepoDir}' '${repo}' 'getWelcomePage'`);
+    await spawnPromise(`./deploy.sh '${repo}' 'development'`);
     // only trigger deploy for a 'push' event
-    if (githubEvent === 'push') {
-      await spawnPromise(`./deploy.sh '${repo}' 'development'`);
-    }
+    // if (githubEvent === 'push') {
+    //   await spawnPromise(`./deploy.sh '${repo}' 'development'`);
+    // }
   }
   catch (err_1) {
     console.log('another error', err_1);

@@ -5,4 +5,12 @@ set -e
 stackName=$1
 stackEnv=$2
 
-aws deploy --template-file 'template.yml' --stack-name $stackName-$stackEnv
+# get the latest version of the Stackery CLI
+
+stackery version
+# stackery update
+
+# deploy the stack
+# stackery deploy --stack-name $stackName \
+# --env-name $stackEnv \
+# --git-ref 'master' --non-interactive
