@@ -5,7 +5,4 @@ set -e
 stackName=$1
 stackEnv=$2
 
-
-stackery deploy --stack-name $stackName \
---env-name $stackEnv \
---git-ref 'master' --non-interactive
+aws deploy --template-file 'template.yml' --stack-name $stackName-$stackEnv
