@@ -74,15 +74,18 @@ exports.handler = async event => {
   const localRepoDir = '/tmp'
   // deletes directory contents if the directory is not empty
   fs.emptyDirSync(localRepoDir)
-
+  console.log('1');
   // initialize lambda-git
   await lambdaGit({
     targetDirectory: localRepoDir
   });
 
+  console.log('2');
+
   try {
-    // only trigger deploy for a 'push' event && branch === 'refs/heads/master'
-    if (githubEvent === 'push') {
+    // only trigger deploy for a 'push' event on the 'master' branch
+    if (githubEvent === 'push' && branch === 'refs/heads/master') {
+      console.log('3');
       await spawnPromise(`./deploy.sh '${process.env.STACKERY_KEY}' '${process.env.STACKERY_SECRET}' '${repo}' '${env}' '${process.env.STACKERY_ENV}' '${process.env.STACKERY_USER_POOL_ID}' '${process.env.STACKERY_USER_POOL_CLIENT_ID}'`);
     }
   }
