@@ -42,6 +42,7 @@ exports.handler = async event => {
   const headers = event.headers;
   const githubEvent = headers['X-GitHub-Event'];
   const body = JSON.parse(event.body);
+  const branch = body.ref;
   const { repository } = body;
   const repo = repository.name;
   const url = repository.html_url;
@@ -62,15 +63,15 @@ exports.handler = async event => {
   
   // Log git event to CloudWatch
   console.log('---------------------------------');
-  console.log(`Github-Event: "${githubEvent}" on this repo: "${owner}/${repo}".`);
+  console.log(`Github-Event: "${githubEvent}" on this repo: "${owner}/${repo}", on branch "${branch}".`);
   console.log('---------------------------------');
   console.log(`This is the repo url we'll be using to deploy: ${url}.git`);
   console.log('---------------------------------');
 
   // pass on git url
   process.env['GIT_URL'] = url;
-  // create a new directory for cloning the repo
-  const localRepoDir = `/tmp/${repo}`
+  // create a new directory for stackery
+  const localRepoDir = '/tmp'
   // deletes directory contents if the directory is not empty
   fs.emptyDirSync(localRepoDir)
 
@@ -80,13 +81,10 @@ exports.handler = async event => {
   });
 
   try {
-    await spawnPromise(`./deploy.sh '${process.env.STACKERY_KEY}' '${process.env.STACKERY_SECRET}' '${repo}' '${env}'`);
-    console.log('process.env.STACKERY_KEY, process.env.STACKERY_SECRET, repo, env')
-    console.log(process.env.STACKERY_KEY, process.env.STACKERY_SECRET, repo, env)
-    // only trigger deploy for a 'push' event
-    // if (githubEvent === 'push') {
-    //   await spawnPromise(`./deploy.sh '${repo}' 'development'`);
-    // }
+    // only trigger deploy for a 'push' event && branch === 'refs/heads/master'
+    if (githubEvent === 'push') {
+      await spawnPromise(`./deploy.sh '${process.env.STACKERY_KEY}' '${process.env.STACKERY_SECRET}' '${repo}' '${env}' '${process.env.STACKERY_ENV}' '${process.env.STACKERY_USER_POOL_ID}' '${process.env.STACKERY_USER_POOL_CLIENT_ID}'`);
+    }
   }
   catch (err_1) {
     console.log('another error', err_1);
