@@ -67,6 +67,8 @@ Resources:
             Path: /prod
             Method: POST
             RestApiId: !Ref api1BBC17DA
+      Layers:
+        - arn:aws:lambda:us-west-2:553035198032:layer:git:3
     Metadata:
       StackeryName: handleDeploy
   functionBBD9C52E:
