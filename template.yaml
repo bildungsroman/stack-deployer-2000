@@ -57,6 +57,9 @@ Resources:
           GITHUB_TOKEN: !Ref EnvConfiggithubTokenAsString
           STACKERY_KEY: !Ref EnvConfigstackeryKeyAsString
           STACKERY_SECRET: !Ref EnvConfigstackerySecretAsString
+          STACKERY_ENV: !Ref EnvConfigstackeryEnvAsString
+          STACKERY_USER_POOL_ID: !Ref EnvConfigstackeryUserPoolIdAsString
+          STACKERY_USER_POOL_CLIENT_ID: !Ref EnvConfigstackeryUserPoolClientIdAsString
       Events:
         api1BBC17DAPOSTprod:
           Type: Api
@@ -120,9 +123,21 @@ Parameters:
   EnvConfigstackerySecretAsString:
     Type: AWS::SSM::Parameter::Value<String>
     Default: /<EnvironmentName>/stackerySecret
+  EnvConfigstackeryEnvAsString:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /<EnvironmentName>/stackeryEnv
+  EnvConfigstackeryUserPoolIdAsString:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /<EnvironmentName>/stackeryUserPoolId
+  EnvConfigstackeryUserPoolClientIdAsString:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /<EnvironmentName>/stackeryUserPoolClientId
 Metadata:
   EnvConfigParameters:
     EnvConfiggithubSecretAsString: githubSecret
     EnvConfiggithubTokenAsString: githubToken
     EnvConfigstackeryKeyAsString: stackeryKey
     EnvConfigstackerySecretAsString: stackerySecret
+    EnvConfigstackeryEnvAsString: stackeryEnv
+    EnvConfigstackeryUserPoolIdAsString: stackeryUserPoolId
+    EnvConfigstackeryUserPoolClientIdAsString: stackeryUserPoolClientId
