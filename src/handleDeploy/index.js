@@ -1,6 +1,7 @@
 const child_process = require('child_process');
 const lambdaGit = require('lambda-git');
 const fs = require('fs-extra');
+const AWS = require('aws-sdk');
 const stackery = require('stackery');
 // sets the correct path in Lambda
 process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'];
@@ -46,6 +47,8 @@ exports.handler = async event => {
   const url = repository.html_url;
   // so 'ping' events don't fail
   const owner = repository.owner.name ? repository.owner.name : repository.owner.login;
+  // get env from process.env
+  const env = 'development';
 
   // check for GitHub secret
   if (typeof secret !== 'string') {
@@ -67,7 +70,7 @@ exports.handler = async event => {
   // pass on git url
   process.env['GIT_URL'] = url;
   // create a new directory for cloning the repo
-  const localRepoDir = '/tmp/repo'
+  const localRepoDir = `/tmp/${repo}`
   // deletes directory contents if the directory is not empty
   fs.emptyDirSync(localRepoDir)
 
@@ -77,7 +80,9 @@ exports.handler = async event => {
   });
 
   try {
-    await spawnPromise(`./deploy.sh '${repo}' 'development'`);
+    await spawnPromise(`./deploy.sh '${process.env.STACKERY_KEY}' '${process.env.STACKERY_SECRET}' '${repo}' '${env}'`);
+    console.log('process.env.STACKERY_KEY, process.env.STACKERY_SECRET, repo, env')
+    console.log(process.env.STACKERY_KEY, process.env.STACKERY_SECRET, repo, env)
     // only trigger deploy for a 'push' event
     // if (githubEvent === 'push') {
     //   await spawnPromise(`./deploy.sh '${repo}' 'development'`);
