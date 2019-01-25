@@ -14,6 +14,11 @@ stackery update
 # make stackery.toml file with secrets credentials
 touch stackery.toml
 
+echo $stackeryKey
+echo $stackerySecret
+echo $stackName
+echo $stackEnv
+
 ls
 
 # [stackery]
