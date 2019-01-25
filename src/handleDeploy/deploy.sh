@@ -14,6 +14,7 @@ stackery update
 # make stackery.toml file with secrets credentials
 touch stackery.toml
 
+ls
 
 # [stackery]
 #   key = "$stackeryKey"
