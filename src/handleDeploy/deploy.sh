@@ -30,6 +30,7 @@ ls
 # get AWS creds from process.env
 
 # deploy the stack
+# stackery deploy -n $stackName -e $stackEnv -r master --aws-profile $awsProfile (get from env?)
 # stackery deploy --stack-name $stackName \
 # --env-name $stackEnv \
 # --git-ref 'master' --non-interactive
