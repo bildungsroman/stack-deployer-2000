@@ -55,6 +55,8 @@ Resources:
         Variables:
           GITHUB_WEBHOOK_SECRET: !Ref EnvConfiggithubSecretAsString
           GITHUB_TOKEN: !Ref EnvConfiggithubTokenAsString
+          STACKERY_KEY: !Ref EnvConfigstackeryKeyAsString
+          STACKERY_SECRET: !Ref EnvConfigstackerySecretAsString
       Events:
         api1BBC17DAPOSTprod:
           Type: Api
@@ -112,7 +114,15 @@ Parameters:
   EnvConfiggithubTokenAsString:
     Type: AWS::SSM::Parameter::Value<String>
     Default: /<EnvironmentName>/githubToken
+  EnvConfigstackeryKeyAsString:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /<EnvironmentName>/stackeryKey
+  EnvConfigstackerySecretAsString:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /<EnvironmentName>/stackerySecret
 Metadata:
   EnvConfigParameters:
     EnvConfiggithubSecretAsString: githubSecret
     EnvConfiggithubTokenAsString: githubToken
+    EnvConfigstackeryKeyAsString: stackeryKey
+    EnvConfigstackerySecretAsString: stackerySecret
