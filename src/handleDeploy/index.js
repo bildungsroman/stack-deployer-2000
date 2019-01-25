@@ -1,5 +1,4 @@
-const child_process = require('child_process');
-const lambdaGit = require('lambda-git');
+const { execSync } = require('child_process')
 const fs = require('fs-extra');
 const AWS = require('aws-sdk');
 const stackery = require('stackery');
@@ -20,7 +19,7 @@ function spawnPromise(command, options) {
   console.log('process.env', process.env);
 
   return new Promise((resolve, reject) => {
-    child_process.exec(command, options, (err, stdout, stderr) => {
+    execSync.exec(command, options, (err, stdout, stderr) => {
       if (err) {
         err.stdout = stdout
         err.stderr = stderr
@@ -68,24 +67,16 @@ exports.handler = async event => {
   console.log(`This is the repo url we'll be using to deploy: ${url}.git`);
   console.log('---------------------------------');
 
-  // pass on git url
-  process.env['GIT_URL'] = url;
   // create a new directory for stackery
-  const localRepoDir = '/tmp'
+  const localRepoDir = `/tmp/${repo}`
   // deletes directory contents if the directory is not empty
   fs.emptyDirSync(localRepoDir)
   console.log('1');
-  // initialize lambda-git
-  await lambdaGit({
-    targetDirectory: localRepoDir
-  });
-
-  console.log('2');
 
   try {
     // only trigger deploy for a 'push' event on the 'master' branch
     if (githubEvent === 'push' && branch === 'refs/heads/master') {
-      console.log('3');
+      console.log('2');
       await spawnPromise(`./deploy.sh '${process.env.STACKERY_KEY}' '${process.env.STACKERY_SECRET}' '${repo}' '${env}' '${process.env.STACKERY_ENV}' '${process.env.STACKERY_USER_POOL_ID}' '${process.env.STACKERY_USER_POOL_CLIENT_ID}'`);
     }
   }
