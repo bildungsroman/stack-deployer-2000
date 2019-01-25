@@ -14,9 +14,6 @@ stackeryUserPoolClientId=$7
 # check directory
 pwd
 
-# get the latest version of the Stackery CLI
-stackery update
-
 # make stackery.toml file with secrets credentials
 touch stackery.toml
 
@@ -35,7 +32,8 @@ ls
 
 cat stackery.toml
 
-
+# get the latest version of the Stackery CLI
+stackery update
 
 # get AWS creds from process.env, write to $awsProfile
 
